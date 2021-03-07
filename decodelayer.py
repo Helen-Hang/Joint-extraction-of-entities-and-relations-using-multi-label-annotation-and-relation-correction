@@ -6,6 +6,7 @@ from keras import backend as K
 import theano
 from keras.layers.core import Layer
 import sys
+import tensorflow as tf
 import os
 
 
@@ -734,35 +735,51 @@ class Attention(Layer):
         # 如果同时传入Q_seq,K_seq,V_seq,Q_len,V_len，那么对多余部分做Mask
         x = [x, x, x]
         if len(x) == 3:
+            # Q_seq.shape=[batch_size, Q_sequence_length, Q_embedding_dim]
+            # K_seq.shape=[batch_size, K_sequence_length, K_embedding_dim]
+            # V_seq.shape=[batch_size, V_sequence_length, V_embedding_dim]
+            # Q_len.shape=[batch_size, 1]
+            # V_len.shape=[batch_size, 1]
             Q_seq, K_seq, V_seq = x
             Q_len, V_len = None, None
         elif len(x) == 5:
             Q_seq, K_seq, V_seq, Q_len, V_len = x
         # 对Q、K、V做线性变换
+        # Q_seq.shape = [batch_size, self.multiheads, Q_sequence_length, self.head_dim]
         Q_seq = K.dot(Q_seq, self.WQ)
         Q_seq = K.reshape(Q_seq, (-1, K.shape(Q_seq)[1], self.nb_head, self.size_per_head))
         Q_seq = K.permute_dimensions(Q_seq, (0, 2, 1, 3))
+        # K_seq.shape = [batch_size, self.multiheads, K_sequence_length, self.head_dim]
         K_seq = K.dot(K_seq, self.WK)
         K_seq = K.reshape(K_seq, (-1, K.shape(K_seq)[1], self.nb_head, self.size_per_head))
         K_seq = K.permute_dimensions(K_seq, (0, 2, 1, 3))
+        # V_seq.shape = [batch_size, self.multiheads, V_sequence_length, self.head_dim]
         V_seq = K.dot(V_seq, self.WV)
         V_seq = K.reshape(V_seq, (-1, K.shape(V_seq)[1], self.nb_head, self.size_per_head))
         V_seq = K.permute_dimensions(V_seq, (0, 2, 1, 3))
         # 计算内积，然后mask，然后softmax
+        # A.shape=[batch_size,self.multiheads,Q_sequence_length,K_sequence_length]
         A = K.batch_dot(Q_seq, K_seq, axes=[3, 3]) / self.size_per_head ** 0.5
+        # A.shape=[batch_size,K_sequence_length,Q_sequence_length,self.multiheads]
         A = K.permute_dimensions(A, (0, 3, 2, 1))
         A = self.Mask(A, V_len, 'add')
+        # A.shape=[batch_size,self.multiheads,Q_sequence_length,K_sequence_length]
         A = K.permute_dimensions(A, (0, 3, 2, 1))
         A = K.softmax(A)
         # 输出并mask
+        # O_seq.shape=[batch_size,self.multiheads,Q_sequence_length,V_sequence_length]
         O_seq = K.batch_dot(A, V_seq, axes=[3, 2])
+        # O_seq.shape=[batch_size,Q_sequence_length,self.multiheads,V_sequence_length]
         O_seq = K.permute_dimensions(O_seq, (0, 2, 1, 3))
+        # O_seq.shape=[,Q_sequence_length,self.multiheads*self.head_dim]
         O_seq = K.reshape(O_seq, (-1, K.shape(O_seq)[1], self.output_dim))
         O_seq = self.Mask(O_seq, Q_len, 'mul')
+        # print(O_seq)
         return O_seq
 
     def compute_output_shape(self, input_shape):
         input_shape = [input_shape, input_shape, input_shape]
+        #shape=[batch_size,Q_sequence_length,self.multiheads*self.head_dim]
         return (input_shape[0][0], input_shape[0][1], self.output_dim)
 
 
