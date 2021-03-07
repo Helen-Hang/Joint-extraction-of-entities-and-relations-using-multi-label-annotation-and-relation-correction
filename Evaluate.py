@@ -4,54 +4,54 @@ import sys
 
 
 def evaluavtion_triple(testresult):
-    # total_predict_right = 0.
-    # total_predict = 0.
-    # total_right = 0.
-    #
-    # for sent in testresult:
-    #     ptag = sent[0]
-    #     ttag = sent[1]
-    #     predictrightnum, predictnum, rightnum = count_sentence_triple_num(ptag, ttag)
-    #     total_predict_right += predictrightnum
-    #     total_predict += predictnum
-    #     total_right += rightnum
-    # # print(total_predict_right,total_predict,total_right)
-    # P = total_predict_right / float(total_predict) if total_predict != 0 else 0
-    # R = total_predict_right / float(total_right)
-    # F = (2*P*R)/float(P+R) if P != 0 else 0
-    #
-    # return P, R, F
-
-    total_predict_right1 = 0.
-    total_predict1 = 0.
-    total_predict_right2 = 0.
-    total_predict2 = 0.
     total_predict_right = 0.
     total_predict = 0.
-    total_right = 390.
+    total_right = 0.
+
     for sent in testresult:
         ptag = sent[0]
         ttag = sent[1]
-        rightnum, predictnum, rightnume1, rightnume2, predictnume1, predictnume2 \
-            = count_predict_right_num(ptag, ttag)
-        total_predict_right1 += rightnume1
-        total_predict1 += predictnume1
-        total_predict_right2 += rightnume2
-        total_predict2 += predictnume2
-        total_predict_right += rightnum
+        predictrightnum, predictnum, rightnum = count_sentence_triple_num(ptag, ttag)
+        total_predict_right += predictrightnum
         total_predict += predictnum
-    # print(total_predict_right1,total_predict1,total_predict_right2,total_predict2,total_predict_right,total_predict)
-
-    P1 = total_predict_right1 / float(total_predict1) if total_predict1 != 0 else 0
-    R1 = total_predict_right1 / float(total_right)
-    F1 = (2*P1*R1)/float(P1+R1) if P1 != 0 else 0
-    P2 = total_predict_right2 / float(total_predict2) if total_predict2 != 0 else 0
-    R2 = total_predict_right2 / float(total_right)
-    F2 = (2*P2*R2)/float(P2+R2) if P2 != 0 else 0
+        total_right += rightnum
+    # print(total_predict_right,total_predict,total_right)
     P = total_predict_right / float(total_predict) if total_predict != 0 else 0
     R = total_predict_right / float(total_right)
     F = (2*P*R)/float(P+R) if P != 0 else 0
-    return P1, R1, F1, P2, R2, F2, P, R, F
+
+    return P, R, F
+
+    # total_predict_right1 = 0.
+    # total_predict1 = 0.
+    # total_predict_right2 = 0.
+    # total_predict2 = 0.
+    # total_predict_right = 0.
+    # total_predict = 0.
+    # total_right = 395.
+    # for sent in testresult:
+    #     ptag = sent[0]
+    #     ttag = sent[result]
+    #     rightnum, predictnum, rightnume1, rightnume2, predictnume1, predictnume2 \
+    #         = count_predict_right_num(ptag, ttag)
+    #     total_predict_right1 += rightnume1
+    #     total_predict1 += predictnume1
+    #     total_predict_right2 += rightnume2
+    #     total_predict2 += predictnume2
+    #     total_predict_right += rightnum
+    #     total_predict += predictnum
+    # print(total_predict_right1,total_predict1,total_predict_right2,total_predict2,total_predict_right,total_predict)
+    #
+    # P1 = total_predict_right1 / float(total_predict1) if total_predict1 != 0 else 0
+    # R1 = total_predict_right1 / float(total_right)
+    # F1 = (2*P1*R1)/float(P1+R1) if P1 != 0 else 0
+    # P2 = total_predict_right2 / float(total_predict2) if total_predict2 != 0 else 0
+    # R2 = total_predict_right2 / float(total_right)
+    # F2 = (2*P2*R2)/float(P2+R2) if P2 != 0 else 0
+    # P = total_predict_right / float(total_predict) if total_predict != 0 else 0
+    # R = total_predict_right / float(total_right)
+    # F = (2*P*R)/float(P+R) if P != 0 else 0
+    # return P1, R1, F1, P2, R2, F2, P, R, F
 
 
 def count_sentence_triple_num(ptag, ttag):
@@ -67,8 +67,8 @@ def count_sentence_triple_num(ptag, ttag):
         e2 = eelist[1]
         # predict_num += min(len(e1), len(e2))
         #
-        # if predict_num > 1:
-        #     predict_num += 1
+        # if predict_num > result:
+        #     predict_num += result
         if min(len(e1), len(e2)) >= 1:
             predict_num += 1
         if predict_num > 1:
@@ -145,13 +145,13 @@ def tag_to_triple_index(ptag):
                 eelist = []
                 e1 = []
                 e2 = []
-                if type_e[1].__contains__("1"):
+                if type_e[1].__contains__("result"):
                     if type_e[1].__contains__("S"):
                         e1.append((i, i+1))
                     elif type_e[1].__contains__("B"):
                         j = i+1
                         while j < len(ptag):
-                            if ptag[j].__contains__("1") and (ptag[j].__contains__("I") or ptag[j].__contains__("L")):
+                            if ptag[j].__contains__("result") and (ptag[j].__contains__("I") or ptag[j].__contains__("L")):
                                 j += 1
                             else:
                                 break
@@ -174,13 +174,13 @@ def tag_to_triple_index(ptag):
                 eelist = rmpair[type_e[0]]
                 e1 = eelist[0]
                 e2 = eelist[1]
-                if type_e[1].__contains__("1"):
+                if type_e[1].__contains__("result"):
                     if type_e[1].__contains__("S"):
                         e1.append((i, i+1))
                     elif type_e[1].__contains__("B"):
                         j = i+1
                         while j < len(ptag):
-                            if ptag[j].__contains__("1") and (ptag[j].__contains__("I") or ptag[j].__contains__("L")):
+                            if ptag[j].__contains__("result") and (ptag[j].__contains__("I") or ptag[j].__contains__("L")):
                                 j += 1
                             else:
                                 break
@@ -226,13 +226,13 @@ def count_predict_right_num(ptag, ttag):
                 eelist = []
                 e1 = []
                 e2 = []
-                if type_e[1].__contains__("1"):
+                if type_e[1].__contains__("result"):
                     if type_e[1].__contains__("S"):
                         e1.append((i, i+1))
                     elif type_e[1].__contains__("B"):
                         j = i+1
                         while j < len(ptag):
-                            if ptag[j].__contains__("1") and (ptag[j].__contains__("I") or ptag[j].__contains__("L")):
+                            if ptag[j].__contains__("result") and (ptag[j].__contains__("I") or ptag[j].__contains__("L")):
                                 j += 1
                             else:
                                 break
@@ -255,13 +255,13 @@ def count_predict_right_num(ptag, ttag):
                 eelist = rmpair[type_e[0]]
                 e1 = eelist[0]
                 e2 = eelist[1]
-                if type_e[1].__contains__("1"):
+                if type_e[1].__contains__("result"):
                     if type_e[1].__contains__("S"):
                         e1.append((i, i+1))
                     elif type_e[1].__contains__("B"):
                         j = i+1
                         while j < len(ptag):
-                            if ptag[j].__contains__("1") and (ptag[j].__contains__("I") or ptag[j].__contains__("L")):
+                            if ptag[j].__contains__("result") and (ptag[j].__contains__("I") or ptag[j].__contains__("L")):
                                 j += 1
                             else:
                                 break
@@ -340,7 +340,7 @@ def count_predict_right_num(ptag, ttag):
                     d = ttag[j].__contains__('/business/person/company')
                     if (a and b) or (c and d):
                         truemarke1 = 1
-                if not ttag[j].__contains__("1"):
+                if not ttag[j].__contains__("result"):
                     truemarke1 = 0
                     break
             for j in range(e2[i][0], e2[i][1]):
@@ -374,12 +374,20 @@ def count_predict_right_num(ptag, ttag):
 
 if __name__ == "__main__":
 
-    for i in range(1, 51):
-            resultname = "./data/demo/result3/result3-{}".format(i * 2)
+    Pre = 0
+    Rec =0
+    F1 = 0
+    for i in range(1, 28):
+            resultname = "./data/demo/result1/result-{}".format(i * 2)
             testresult = pickle.load(open(resultname, 'rb'))
-            # P, R, F = evaluavtion_triple(testresult)
-            # print('Epoch: [{}/{}], P R F {:.4f} {:.4f} {:.4f}'.format(i * 2, 100, P, R, F))
+            P, R, F = evaluavtion_triple(testresult)
+            if F > F1:
+                Pre = P
+                Rec = R
+                F1 = F
+            print('Epoch: [{}/{}], P R F {:.4f} {:.4f} {:.4f}'.format(i * 2, 100, P, R, F))
+    print(Pre, Rec, F1)
 
-            P1, R1, F1, P2, R2, F2, P, R, F = evaluavtion_triple(testresult)
-            print('Epoch: [{}/{}], P1 R1 F1 P2 R2 F2 P R F {:.4f} {:.4f} {:.4f} {:.4f} {:.4f} {:.4f} {:.4f}'
-                  ' {:.4f} {:.4f}'.format(i * 2, 100, P1, R1, F1, P2, R2, F2, P, R, F))
+
+            # P1, R1, F1, P2, R2, F2, P, R, F = evaluavtion_triple(testresult)
+            # print('Epoch: [{}/{}], P1 R1 F1 P2 R2 F2 P R F {:.4f} {:.4f} {:.4f} {:.4f} {:.4f} {:.4f} {:.4f} {:.4f} {:.4f}'.format(i * 2, 100, P1, R1, F1, P2, R2, F2, P, R, F))
