@@ -146,7 +146,7 @@ tensorboard==1.12.2
 tensorboard-plugin-wit==1.6.0.post3
 tensorflow==1.12.0
 tensorflow-estimator==2.2.0
-tensorflow-gpu==1.12.0
+tensorflow-gpu==2.4.0
 termcolor==1.1.0
 terminado==0.8.2
 testpath==0.4.2
