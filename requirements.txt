@@ -8,7 +8,7 @@ backcall==0.1.0
 beautifulsoup4==4.6.0
 bert-serving-client==1.9.8
 bert-serving-server==1.9.8
-bleach==1.5.0
+bleach==3.3.0
 blinker==1.4
 blis==0.4.1
 boto==2.49.0
