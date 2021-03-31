@@ -80,7 +80,7 @@ Keras-Preprocessing==1.1.2
 keras-self-attention==0.41.0
 keras-transformer==0.22.0
 kiwisolver==1.1.0
-lxml==4.2.1
+lxml==4.6.3
 Mako==1.0.7
 Markdown==3.2.2
 MarkupSafe==1.1.1
